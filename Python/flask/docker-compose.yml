@@ -1,0 +1,31 @@
+services:
+  db_mysql:
+    image: mysql
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: data
+      MYSQL_ROOT_PASSWORD: feriadiputra
+    volumes:
+      - db-data:/var/lib/mysql
+    expose:
+      - 3306
+    ports:
+      - "3306:3306"
+
+  flask:
+    image: python/flask:1.0.5
+    container_name: flask-app
+    command: bash -c "sleep 15 && flask db init && flask db migrate && flask db upgrade && flask run --host=0.0.0.0"
+    environment:
+      DB_HOST: db_mysql
+      DB_DATABASE: data
+      DB_USERNAME: root
+      DB_PASSWORD: feriadiputra
+    depends_on:
+      - db_mysql
+    ports:
+      - "5000:5000"
+
+volumes:
+  db-data:
