@@ -10,6 +10,6 @@ app.get("/rahasia", (req, res) => {
   res.send("boom awoakwoawkakw");
 });
 
-app.listen(PORT, () => {
+app.listen(5000, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
