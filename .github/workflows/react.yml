@@ -7,21 +7,21 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Deploy to Amazon ECS
+name: Deploy react to Amazon ECS
 
 on:
   push:
     paths:
-      - "Nodejs/**"
+      - "React/**"
 
 env:
   AWS_REGION: us-east-1                   # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: nodejs           # set this to your Amazon ECR repository name
   ECS_SERVICE: node_react                 # set this to your Amazon ECS service name
-  ECS_CLUSTER: react-node                 # set this to your Amazon ECS cluster name
+  ECS_CLUSTER: node-react                 # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: node_react # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: nodejs           # set this to the name of the container in the
+  CONTAINER_NAME: react_movie           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
 
 jobs:

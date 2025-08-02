@@ -7,7 +7,7 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Deploy to Amazon ECS
+name: Deploy nodejs to Amazon ECS
 
 on:
   push:
@@ -15,11 +15,11 @@ on:
       - "Nodejs/**"
 
 env:
-  AWS_REGION: us-east-1                   # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: nodejs           # set this to your Amazon ECR repository name
-  ECS_SERVICE: node_react                 # set this to your Amazon ECS service name
-  ECS_CLUSTER: react-node                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: node_react # set this to the path to your Amazon ECS task definition
+  AWS_REGION: us-east-1                  # set this to your preferred AWS region, e.g. us-west-1
+  ECR_REPOSITORY: nodejs-app           # set this to your Amazon ECR repository name
+  ECS_SERVICE: nodejs-service-t1wqqqva                 # set this to your Amazon ECS service name
+  ECS_CLUSTER: test                 # set this to your Amazon ECS cluster name
+  ECS_TASK_DEFINITION: .aws/taskdef.json # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: nodejs           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
@@ -39,7 +39,6 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
@@ -50,14 +49,13 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: latest
         run: |
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./Nodejs
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
